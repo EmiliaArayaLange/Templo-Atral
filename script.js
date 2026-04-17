@@ -322,6 +322,136 @@ const intentionProfiles = {
   }
 };
 
+const sunSignProfiles = {
+  Aries: {
+    element: "fuego",
+    message: "Tu energia solar nace para iniciar, encender y abrir caminos.",
+    chakra: "Plexo solar"
+  },
+  Tauro: {
+    element: "tierra",
+    message: "Tu signo solar necesita estabilidad, cuerpo presente y construccion paciente.",
+    chakra: "Raiz"
+  },
+  Geminis: {
+    element: "aire",
+    message: "Tu campo se aclara cuando dialogas, nombras y conectas ideas con libertad.",
+    chakra: "Garganta"
+  },
+  Cancer: {
+    element: "agua",
+    message: "Tu energia solar se mueve desde la sensibilidad, el cuidado y la memoria emocional.",
+    chakra: "Corazon"
+  },
+  Leo: {
+    element: "fuego",
+    message: "Tu centro vital quiere expresarse con coraje, identidad y presencia.",
+    chakra: "Plexo solar"
+  },
+  Virgo: {
+    element: "tierra",
+    message: "Tu fuerza aparece cuando ordenas, depuras y escuchas los detalles del cuerpo.",
+    chakra: "Raiz"
+  },
+  Libra: {
+    element: "aire",
+    message: "Tu signo solar busca armonia, vinculos equilibrados y belleza relacional.",
+    chakra: "Corazon"
+  },
+  Escorpio: {
+    element: "agua",
+    message: "Tu energia solar atraviesa procesos profundos, intensos y transformadores.",
+    chakra: "Sacro"
+  },
+  Sagitario: {
+    element: "fuego",
+    message: "Tu campo se expande con vision, busqueda de sentido y movimiento interior.",
+    chakra: "Corona"
+  },
+  Capricornio: {
+    element: "tierra",
+    message: "Tu energia solar se fortalece con estructura, responsabilidad y constancia.",
+    chakra: "Raiz"
+  },
+  Acuario: {
+    element: "aire",
+    message: "Tu signo solar necesita perspectiva, ideas nuevas y libertad para diferenciarse.",
+    chakra: "Tercer ojo"
+  },
+  Piscis: {
+    element: "agua",
+    message: "Tu campo se mueve por intuicion, sensibilidad y una conexion simbolica muy fina.",
+    chakra: "Corona"
+  }
+};
+
+const lifePathProfiles = {
+  1: {
+    title: "iniciadora",
+    message: "Tu numero de vida pide liderazgo, autonomia y decisiones claras.",
+    chakra: "Plexo solar"
+  },
+  2: {
+    title: "vinculo y cooperacion",
+    message: "Tu camino se ordena cuando escuchas lo sutil y construyes armonia sin perderte.",
+    chakra: "Corazon"
+  },
+  3: {
+    title: "expresion y creatividad",
+    message: "Tu energia prospera cuando la voz interior encuentra una forma de expresarse.",
+    chakra: "Garganta"
+  },
+  4: {
+    title: "estructura y base",
+    message: "Tu numero de vida busca orden, constancia y una base firme para crecer.",
+    chakra: "Raiz"
+  },
+  5: {
+    title: "cambio y movimiento",
+    message: "Tu aprendizaje esta en sostener libertad con direccion y no desde el impulso vacio.",
+    chakra: "Sacro"
+  },
+  6: {
+    title: "cuidado y responsabilidad",
+    message: "Tu camino florece cuando ofreces amor sin cargar con lo que no te toca.",
+    chakra: "Corazon"
+  },
+  7: {
+    title: "busqueda interior",
+    message: "Tu numero de vida pide silencio, intuicion y profundidad antes de avanzar.",
+    chakra: "Tercer ojo"
+  },
+  8: {
+    title: "poder y manifestacion",
+    message: "Tu energia necesita asumir autoridad interior y relacion sana con lo material.",
+    chakra: "Plexo solar"
+  },
+  9: {
+    title: "servicio y cierre",
+    message: "Tu camino se mueve entre compasion, sabiduria emocional y capacidad de cerrar ciclos.",
+    chakra: "Corona"
+  },
+  11: {
+    title: "vision intuitiva",
+    message: "Tu numero maestro amplifica percepcion, inspiracion y sensibilidad energetica.",
+    chakra: "Tercer ojo"
+  },
+  22: {
+    title: "constructora de vision",
+    message: "Tu numero maestro invita a bajar grandes visiones a estructuras concretas.",
+    chakra: "Raiz"
+  },
+  33: {
+    title: "guia compasiva",
+    message: "Tu numero maestro une amor, entrega y una vocacion muy fuerte de acompanar.",
+    chakra: "Corazon"
+  }
+};
+
+const STORAGE_KEY = "templo-astral-readings-v2";
+const DRAFT_KEY = "templo-astral-draft-v2";
+const cloudConfig = window.TEMPLO_ASTRAL_CONFIG || {};
+
 const readingForm = document.querySelector("#reading-form");
 const quickReadingButton = document.querySelector("#quick-reading");
 const checkChakraButton = document.querySelector("#check-chakra");
@@ -332,6 +462,77 @@ const spreadNow = document.querySelector("#spread-now");
 const spreadBlock = document.querySelector("#spread-block");
 const spreadPath = document.querySelector("#spread-path");
 const chakraButtons = [...document.querySelectorAll(".chakra-card")];
+const historyList = document.querySelector("#history-list");
+const historyStatus = document.querySelector("#history-status");
+const recordCount = document.querySelector("#record-count");
+const lastSaved = document.querySelector("#last-saved");
+const storageCloudStatus = document.querySelector("#storage-cloud-status");
+const storageLocalStatus = document.querySelector("#storage-local-status");
+const saveFeedback = document.querySelector("#save-feedback");
+const syncInline = document.querySelector("#sync-inline");
+const exportCsvButton = document.querySelector("#export-csv");
+const clearHistoryButton = document.querySelector("#clear-history");
+
+let readings = loadRecords();
+
+function getCloudUrl() {
+  return typeof cloudConfig.appsScriptUrl === "string" ? cloudConfig.appsScriptUrl.trim() : "";
+}
+
+function hasStorage() {
+  try {
+    const testKey = "__templo_astral_test__";
+    window.localStorage.setItem(testKey, "ok");
+    window.localStorage.removeItem(testKey);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+function loadJson(key, fallback) {
+  if (!hasStorage()) {
+    return fallback;
+  }
+
+  try {
+    const raw = window.localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch (error) {
+    return fallback;
+  }
+}
+
+function saveJson(key, value) {
+  if (!hasStorage()) {
+    return false;
+  }
+
+  try {
+    window.localStorage.setItem(key, JSON.stringify(value));
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+function loadRecords() {
+  const items = loadJson(STORAGE_KEY, []);
+  return Array.isArray(items) ? items : [];
+}
+
+function saveRecords() {
+  saveJson(STORAGE_KEY, readings);
+}
+
+function loadDraft() {
+  const draft = loadJson(DRAFT_KEY, null);
+  return draft && typeof draft === "object" ? draft : null;
+}
+
+function saveDraft(values) {
+  saveJson(DRAFT_KEY, values);
+}
 
 function animatePanel(panel) {
   if (!panel) {
@@ -344,7 +545,7 @@ function animatePanel(panel) {
 }
 
 function escapeHtml(value) {
-  return value
+  return String(value)
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
@@ -357,7 +558,7 @@ function formatName(value) {
     .trim()
     .split(/\s+/)
     .filter(Boolean)
-    .slice(0, 2)
+    .slice(0, 3)
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase());
 
   return words.join(" ");
@@ -381,6 +582,161 @@ function hashString(value) {
   return hash;
 }
 
+function formatDate(value) {
+  try {
+    return new Intl.DateTimeFormat("es-CL", {
+      dateStyle: "medium",
+      timeStyle: "short"
+    }).format(new Date(value));
+  } catch (error) {
+    return value;
+  }
+}
+
+function normalizeLetters(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toUpperCase()
+    .replace(/[^A-Z]/g, "");
+}
+
+function reduceNumber(value) {
+  let total = value;
+
+  while (total > 9 && ![11, 22, 33].includes(total)) {
+    total = String(total)
+      .split("")
+      .reduce((sum, digit) => sum + Number(digit), 0);
+  }
+
+  return total;
+}
+
+function calculateLifePath(dateString) {
+  if (!dateString) {
+    return null;
+  }
+
+  const digits = dateString.replace(/\D/g, "");
+
+  if (!digits) {
+    return null;
+  }
+
+  const total = digits.split("").reduce((sum, digit) => sum + Number(digit), 0);
+  return reduceNumber(total);
+}
+
+function calculateNameNumber(name) {
+  const letters = normalizeLetters(name);
+
+  if (!letters) {
+    return null;
+  }
+
+  let total = 0;
+
+  for (const letter of letters) {
+    const charCode = letter.charCodeAt(0) - 64;
+    total += ((charCode - 1) % 9) + 1;
+  }
+
+  return reduceNumber(total);
+}
+
+function getSunSign(dateString) {
+  if (!dateString) {
+    return null;
+  }
+
+  const [yearString, monthString, dayString] = dateString.split("-");
+  const year = Number(yearString);
+  const month = Number(monthString);
+  const day = Number(dayString);
+
+  if (!year || !month || !day) {
+    return null;
+  }
+
+  if ((month === 3 && day >= 21) || (month === 4 && day <= 19)) return "Aries";
+  if ((month === 4 && day >= 20) || (month === 5 && day <= 20)) return "Tauro";
+  if ((month === 5 && day >= 21) || (month === 6 && day <= 20)) return "Geminis";
+  if ((month === 6 && day >= 21) || (month === 7 && day <= 22)) return "Cancer";
+  if ((month === 7 && day >= 23) || (month === 8 && day <= 22)) return "Leo";
+  if ((month === 8 && day >= 23) || (month === 9 && day <= 22)) return "Virgo";
+  if ((month === 9 && day >= 23) || (month === 10 && day <= 22)) return "Libra";
+  if ((month === 10 && day >= 23) || (month === 11 && day <= 21)) return "Escorpio";
+  if ((month === 11 && day >= 22) || (month === 12 && day <= 21)) return "Sagitario";
+  if ((month === 12 && day >= 22) || (month === 1 && day <= 19)) return "Capricornio";
+  if ((month === 1 && day >= 20) || (month === 2 && day <= 18)) return "Acuario";
+  return "Piscis";
+}
+
+function getBirthRhythm(timeString) {
+  if (!timeString) {
+    return null;
+  }
+
+  const [hourString] = timeString.split(":");
+  const hour = Number(hourString);
+
+  if (Number.isNaN(hour)) {
+    return null;
+  }
+
+  if (hour >= 5 && hour < 11) {
+    return {
+      label: "ritmo del amanecer",
+      message: "Tu nacimiento se vincula con energia de inicio, claridad y empuje suave.",
+      chakra: "Plexo solar"
+    };
+  }
+
+  if (hour >= 11 && hour < 17) {
+    return {
+      label: "ritmo solar",
+      message: "Tu hora de nacimiento sugiere expansion, visibilidad y potencia creativa.",
+      chakra: "Garganta"
+    };
+  }
+
+  if (hour >= 17 && hour < 22) {
+    return {
+      label: "ritmo del crepusculo",
+      message: "Tu energia se mueve entre introspeccion sensible y capacidad de cierre.",
+      chakra: "Corazon"
+    };
+  }
+
+  return {
+    label: "ritmo nocturno",
+    message: "Tu nacimiento resuena con profundidad simbolica, intuicion y mundo interno activo.",
+    chakra: "Tercer ojo"
+  };
+}
+
+function buildBirthProfile(values) {
+  const sunSign = getSunSign(values.birthDate);
+  const signProfile = sunSign ? sunSignProfiles[sunSign] : null;
+  const lifePath = calculateLifePath(values.birthDate);
+  const lifeProfile = lifePath ? lifePathProfiles[lifePath] : null;
+  const nameNumber = calculateNameNumber(values.name);
+  const birthRhythm = getBirthRhythm(values.birthTime);
+  const birthPlace = values.birthPlace.trim();
+
+  return {
+    sunSign,
+    signProfile,
+    lifePath,
+    lifeProfile,
+    nameNumber,
+    birthRhythm,
+    birthPlace,
+    hasBirthData: Boolean(values.birthDate)
+  };
+}
+
 function scoreMatch(item, values) {
   let score = 0;
 
@@ -399,17 +755,25 @@ function scoreMatch(item, values) {
   return score;
 }
 
-function pickBestMatch(collection, values) {
-  const scored = collection.map((item, index) => ({
+function pickBestMatch(collection, values, birthProfile) {
+  const scored = collection.map((item) => ({
     item,
-    index,
     score: scoreMatch(item, values)
   }));
 
   const bestScore = Math.max(...scored.map((entry) => entry.score));
   const bestEntries = scored.filter((entry) => entry.score === bestScore);
   const seed = hashString(
-    `${values.topic}|${values.state}|${values.intention}|${values.question}|${values.name}`
+    [
+      values.topic,
+      values.state,
+      values.intention,
+      values.question,
+      values.name,
+      birthProfile.sunSign || "",
+      birthProfile.lifePath || "",
+      birthProfile.nameNumber || ""
+    ].join("|")
   );
 
   return bestEntries[seed % bestEntries.length].item;
@@ -423,8 +787,38 @@ function readFormValues() {
     topic: String(formData.get("topic") || "amor"),
     state: String(formData.get("state") || "confusa"),
     intention: String(formData.get("intention") || "claridad"),
-    question: String(formData.get("question") || "").trim()
+    question: String(formData.get("question") || "").trim(),
+    birthDate: String(formData.get("birthDate") || "").trim(),
+    birthTime: String(formData.get("birthTime") || "").trim(),
+    birthPlace: String(formData.get("birthPlace") || "").trim()
   };
+}
+
+function applyDraftToForm() {
+  const draft = loadDraft();
+
+  if (!draft || !readingForm) {
+    return;
+  }
+
+  const fieldMap = {
+    name: "#user-name",
+    topic: "#user-topic",
+    state: "#user-state",
+    intention: "#user-intention",
+    question: "#user-question",
+    birthDate: "#birth-date",
+    birthTime: "#birth-time",
+    birthPlace: "#birth-place"
+  };
+
+  Object.entries(fieldMap).forEach(([key, selector]) => {
+    const input = readingForm.querySelector(selector);
+
+    if (input && typeof draft[key] === "string") {
+      input.value = draft[key];
+    }
+  });
 }
 
 function updateSpread(values) {
@@ -470,7 +864,7 @@ function renderChakra(chakra, sourceLabel) {
   animatePanel(chakraResult);
 }
 
-function buildQuestionLine(values) {
+function buildQuestionMessage(values) {
   if (!values.question) {
     return "No hace falta contarlo todo; la energia de tu consulta ya ofrece suficiente informacion para orientar la lectura.";
   }
@@ -478,20 +872,394 @@ function buildQuestionLine(values) {
   return `Tu pregunta principal dice: "${clampText(values.question, 140)}". Esa frase marca el centro de la lectura.`;
 }
 
-function renderReading(values, options = {}) {
+function buildSolarDetail(profile) {
+  if (!profile.sunSign || !profile.signProfile) {
+    return "Agrega tu fecha de nacimiento para revelar tu perfil solar.";
+  }
+
+  const rhythmText = profile.birthRhythm ? ` ${profile.birthRhythm.message}` : "";
+  const placeText = profile.birthPlace
+    ? ` Tu ancla de origen aparece en ${profile.birthPlace}.`
+    : "";
+
+  return `${profile.sunSign} / elemento ${profile.signProfile.element}. ${profile.signProfile.message}${rhythmText}${placeText}`;
+}
+
+function buildNumberDetail(profile) {
+  if (!profile.lifePath && !profile.nameNumber) {
+    return "Con tu fecha de nacimiento podre mostrar un numero de vida mas personal.";
+  }
+
+  const lifePathText = profile.lifePath
+    ? `Numero de vida ${profile.lifePath}: ${profile.lifeProfile?.message || "marca tu direccion principal."}`
+    : "";
+  const nameText = profile.nameNumber
+    ? ` Vibracion del nombre ${profile.nameNumber}: aporta una capa extra de expresion personal.`
+    : "";
+
+  return `${lifePathText}${nameText}`.trim();
+}
+
+function choosePersonalizedChakra(baseChakra, profile) {
+  const scores = new Map();
+
+  function addScore(name, amount) {
+    if (!name) {
+      return;
+    }
+
+    scores.set(name, (scores.get(name) || 0) + amount);
+  }
+
+  addScore(baseChakra.name, 4);
+  addScore(profile.signProfile?.chakra, 2);
+  addScore(profile.lifeProfile?.chakra, 3);
+  addScore(profile.birthRhythm?.chakra, 1);
+
+  let bestName = baseChakra.name;
+  let bestScore = -1;
+
+  scores.forEach((score, name) => {
+    if (score > bestScore) {
+      bestName = name;
+      bestScore = score;
+    }
+  });
+
+  return chakraDeck.find((chakra) => chakra.name === bestName) || baseChakra;
+}
+
+function getSyncLabel(syncState) {
+  if (syncState === "synced") {
+    return "Sincronizada";
+  }
+
+  if (syncState === "pending") {
+    return "Pendiente";
+  }
+
+  if (syncState === "error") {
+    return "Con error";
+  }
+
+  return "Solo local";
+}
+
+function buildReadingRecord(values, reading, profile) {
+  const cloudUrl = getCloudUrl();
+
+  return {
+    id: `reading-${Date.now()}-${hashString(`${values.name}|${values.question}|${Math.random()}`)}`,
+    createdAt: new Date().toISOString(),
+    displayDate: formatDate(new Date().toISOString()),
+    name: formatName(values.name) || "Alma",
+    topic: values.topic,
+    state: values.state,
+    intention: values.intention,
+    question: values.question,
+    birthDate: values.birthDate,
+    birthTime: values.birthTime,
+    birthPlace: values.birthPlace,
+    sunSign: profile.sunSign,
+    sunElement: profile.signProfile?.element || "",
+    lifePath: profile.lifePath,
+    nameNumber: profile.nameNumber,
+    rhythmLabel: profile.birthRhythm?.label || "",
+    cardName: reading.card.name,
+    cardKeyword: reading.card.keyword,
+    chakraName: reading.chakra.name,
+    chakraAffirmation: reading.chakra.affirmation,
+    currentText: reading.currentText,
+    blockText: reading.blockText,
+    pathText: reading.pathText,
+    ritualText: reading.ritualText,
+    syncState: cloudUrl ? "pending" : "local"
+  };
+}
+
+function renderHistory() {
+  if (!historyList) {
+    return;
+  }
+
+  if (!readings.length) {
+    historyList.innerHTML = `
+      <article class="history-empty">
+        <h3>Tu bitacora espiritual esta vacia por ahora.</h3>
+        <p>
+          Cuando generes una lectura, aqui se guardaran el nombre, la pregunta, la carta principal,
+          el chakra recomendado, el perfil solar y la fecha.
+        </p>
+      </article>
+    `;
+    return;
+  }
+
+  historyList.innerHTML = readings
+    .map((record) => {
+      const questionText = record.question
+        ? clampText(record.question, 180)
+        : "Consulta rapida sin texto adicional.";
+      const profileText = [
+        record.sunSign ? `Signo ${record.sunSign}` : "",
+        record.lifePath ? `Vida ${record.lifePath}` : "",
+        record.nameNumber ? `Nombre ${record.nameNumber}` : ""
+      ]
+        .filter(Boolean)
+        .join(" / ");
+
+      return `
+        <article class="history-item">
+          <div class="history-top">
+            <div>
+              <h3>${escapeHtml(record.name)} / ${escapeHtml(record.cardName)}</h3>
+              <p class="history-meta">${escapeHtml(record.displayDate)}</p>
+            </div>
+            <div class="history-badges">
+              <span class="history-badge">${escapeHtml(record.chakraName)}</span>
+              ${profileText ? `<span class="history-badge">${escapeHtml(profileText)}</span>` : ""}
+              <span class="history-badge">${escapeHtml(getSyncLabel(record.syncState))}</span>
+            </div>
+          </div>
+          <p class="history-summary">${escapeHtml(questionText)}</p>
+          <p class="history-note">
+            Tema: ${escapeHtml(topicProfiles[record.topic]?.label || record.topic)}. Estado:
+            ${escapeHtml(stateProfiles[record.state]?.label || record.state)}. Intencion:
+            ${escapeHtml(intentionProfiles[record.intention]?.label || record.intention)}.
+          </p>
+        </article>
+      `;
+    })
+    .join("");
+}
+
+function updateStorageStatus() {
+  const cloudUrl = getCloudUrl();
+  const pendingCount = readings.filter((record) => record.syncState === "pending").length;
+  const syncedCount = readings.filter((record) => record.syncState === "synced").length;
+  const lastRecord = readings[0];
+
+  storageLocalStatus.textContent = hasStorage()
+    ? "Activo en este navegador"
+    : "No disponible en este navegador";
+
+  if (!cloudUrl) {
+    storageCloudStatus.textContent = "No configurada todavia";
+    syncInline.textContent =
+      "Guardado local activo. Para enviar a Google Sheets, agrega la URL en site-config.js.";
+  } else if (pendingCount > 0) {
+    storageCloudStatus.textContent = `${pendingCount} lectura(s) pendiente(s)`;
+    syncInline.textContent =
+      "Guardado local activo. La nube esta configurada y se estan enviando lecturas pendientes.";
+  } else if (syncedCount > 0) {
+    storageCloudStatus.textContent = "Conectada y al dia";
+    syncInline.textContent =
+      "Guardado local activo y sincronizacion con Google Sheets lista para nuevas lecturas.";
+  } else {
+    storageCloudStatus.textContent = "Conectada, esperando lecturas";
+    syncInline.textContent =
+      "Guardado local activo y Google Sheets preparado para sincronizar nuevos registros.";
+  }
+
+  recordCount.textContent = `${readings.length} registro(s)`;
+  lastSaved.textContent = lastRecord
+    ? `Ultima lectura guardada: ${lastRecord.displayDate}.`
+    : "Aun no se guarda ninguna lectura en este navegador.";
+
+  historyStatus.textContent = readings.length
+    ? `${readings.length} lectura(s) en esta bitacora`
+    : "Sin lecturas guardadas";
+}
+
+function updateRecordSyncState(id, syncState) {
+  readings = readings.map((record) =>
+    record.id === id
+      ? {
+          ...record,
+          syncState,
+          syncedAt: syncState === "synced" ? new Date().toISOString() : record.syncedAt || null
+        }
+      : record
+  );
+
+  saveRecords();
+  updateStorageStatus();
+  renderHistory();
+}
+
+async function syncRecord(record, options = {}) {
+  const cloudUrl = getCloudUrl();
+
+  if (!cloudUrl) {
+    return false;
+  }
+
+  const payload = {
+    ...record,
+    siteUrl: window.location.href,
+    source: "templo-astral"
+  };
+
+  try {
+    await fetch(cloudUrl, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    updateRecordSyncState(record.id, "synced");
+
+    if (!options.silent) {
+      saveFeedback.textContent =
+        "Lectura guardada en este navegador y enviada a la configuracion actual de Google Sheets.";
+    }
+
+    return true;
+  } catch (error) {
+    updateRecordSyncState(record.id, "error");
+
+    if (!options.silent) {
+      saveFeedback.textContent =
+        "La lectura se guardo localmente, pero la sincronizacion externa no pudo completarse.";
+    }
+
+    return false;
+  }
+}
+
+async function syncPendingReadings() {
+  const cloudUrl = getCloudUrl();
+
+  if (!cloudUrl) {
+    return;
+  }
+
+  const queue = readings.filter((record) => record.syncState !== "synced");
+
+  for (const record of queue) {
+    await syncRecord(record, { silent: true });
+  }
+}
+
+function persistReading(record) {
+  readings = [record, ...readings].slice(0, 50);
+  saveRecords();
+  renderHistory();
+  updateStorageStatus();
+}
+
+function csvEscape(value) {
+  return `"${String(value || "").replaceAll('"', '""')}"`;
+}
+
+function exportReadingsToCsv() {
+  if (!readings.length) {
+    saveFeedback.textContent = "No hay lecturas para exportar todavia.";
+    return;
+  }
+
+  const headers = [
+    "fecha",
+    "nombre",
+    "tema",
+    "estado",
+    "intencion",
+    "pregunta",
+    "fecha_nacimiento",
+    "hora_nacimiento",
+    "lugar_nacimiento",
+    "signo_solar",
+    "elemento",
+    "numero_vida",
+    "numero_nombre",
+    "carta",
+    "palabra_guia",
+    "chakra",
+    "afirmacion",
+    "sincronizacion"
+  ];
+
+  const rows = readings.map((record) => [
+    record.displayDate,
+    record.name,
+    topicProfiles[record.topic]?.label || record.topic,
+    stateProfiles[record.state]?.label || record.state,
+    intentionProfiles[record.intention]?.label || record.intention,
+    record.question || "",
+    record.birthDate || "",
+    record.birthTime || "",
+    record.birthPlace || "",
+    record.sunSign || "",
+    record.sunElement || "",
+    record.lifePath || "",
+    record.nameNumber || "",
+    record.cardName,
+    record.cardKeyword,
+    record.chakraName,
+    record.chakraAffirmation,
+    getSyncLabel(record.syncState)
+  ]);
+
+  const csv = [headers, ...rows].map((row) => row.map(csvEscape).join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = "templo-astral-lecturas.csv";
+  document.body.append(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+
+  saveFeedback.textContent = "Se descargo un CSV con las lecturas guardadas en este navegador.";
+}
+
+function clearHistory() {
+  if (!readings.length) {
+    saveFeedback.textContent = "No hay historial que borrar.";
+    return;
+  }
+
+  const confirmed = window.confirm(
+    "Se borrara el historial guardado en este navegador. Esta accion no se puede deshacer."
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  readings = [];
+  saveRecords();
+  renderHistory();
+  updateStorageStatus();
+  saveFeedback.textContent = "Se borro el historial local de lecturas.";
+}
+
+async function renderReading(values, options = {}) {
   const topic = topicProfiles[values.topic];
   const state = stateProfiles[values.state];
   const intention = intentionProfiles[values.intention];
-  const card = pickBestMatch(cardDeck, values);
-  const chakra = pickBestMatch(chakraDeck, values);
+  const profile = buildBirthProfile(values);
+  const card = pickBestMatch(cardDeck, values, profile);
+  const baseChakra = pickBestMatch(chakraDeck, values, profile);
+  const chakra = choosePersonalizedChakra(baseChakra, profile);
   const displayName = formatName(values.name) || "Alma";
   const intro = `${displayName}, tu lectura se enfoca en ${topic.label}.`;
+  const profileIntro = profile.hasBirthData
+    ? `Tu perfil base combina signo solar ${profile.sunSign || "por definir"} y numero de vida ${profile.lifePath || "intuitivo"}.`
+    : "Con tu fecha de nacimiento la lectura podria sumar un perfil solar y numerologico mas fino.";
   const message =
-    `${intro} ${buildQuestionLine(values)} ${card.essence} ${state.current} ${intention.support}`;
+    `${intro} ${buildQuestionMessage(values)} ${profileIntro} ${card.essence} ${state.current} ${intention.support}`;
   const currentText = `${topic.current} ${state.current}`;
   const blockText = `${state.block} ${topic.block}`;
   const pathText = `${intention.path} ${topic.path}`;
   const ritualText = `${card.ritual} ${intention.ritual}`;
+  const solarDetail = buildSolarDetail(profile);
+  const numberDetail = buildNumberDetail(profile);
 
   cardResult.innerHTML = `
     <p class="result-tag">Carta principal</p>
@@ -511,6 +1279,14 @@ function renderReading(values, options = {}) {
         <span>Puerta abierta</span>
         <strong>${escapeHtml(pathText)}</strong>
       </article>
+      <article>
+        <span>Perfil solar</span>
+        <strong>${escapeHtml(solarDetail)}</strong>
+      </article>
+      <article>
+        <span>Numero guia</span>
+        <strong>${escapeHtml(numberDetail)}</strong>
+      </article>
     </div>
     <p class="result-note">${escapeHtml(ritualText)}</p>
   `;
@@ -522,21 +1298,52 @@ function renderReading(values, options = {}) {
   if (options.syncChakra) {
     renderChakra(chakra, "Chakra recomendado");
   }
+
+  const reading = {
+    card,
+    chakra,
+    currentText,
+    blockText,
+    pathText,
+    ritualText
+  };
+
+  const record = buildReadingRecord(values, reading, profile);
+  persistReading(record);
+
+  saveFeedback.textContent = getCloudUrl()
+    ? "Lectura guardada en este navegador. Intentando sincronizar con Google Sheets."
+    : "Lectura guardada en este navegador con perfil numerologico y solar incluido.";
+
+  if (getCloudUrl()) {
+    await syncRecord(record);
+  }
 }
 
-readingForm?.addEventListener("submit", (event) => {
+readingForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
-  renderReading(readFormValues(), { syncChakra: true });
+  const values = readFormValues();
+
+  saveDraft(values);
+  await renderReading(values, { syncChakra: true });
 });
 
-quickReadingButton?.addEventListener("click", () => {
+readingForm?.addEventListener("input", () => {
+  saveDraft(readFormValues());
+});
+
+quickReadingButton?.addEventListener("click", async () => {
   const values = readFormValues();
   values.question = "";
-  renderReading(values, { syncChakra: true });
+  saveDraft(values);
+  await renderReading(values, { syncChakra: true });
 });
 
 checkChakraButton?.addEventListener("click", () => {
-  const chakra = pickBestMatch(chakraDeck, readFormValues());
+  const values = readFormValues();
+  const profile = buildBirthProfile(values);
+  const baseChakra = pickBestMatch(chakraDeck, values, profile);
+  const chakra = choosePersonalizedChakra(baseChakra, profile);
   renderChakra(chakra, "Chakra recomendado");
 });
 
@@ -552,4 +1359,11 @@ chakraButtons.forEach((button) => {
   });
 });
 
+exportCsvButton?.addEventListener("click", exportReadingsToCsv);
+clearHistoryButton?.addEventListener("click", clearHistory);
+
+applyDraftToForm();
+renderHistory();
+updateStorageStatus();
 highlightChakra("Corazon");
+syncPendingReadings();

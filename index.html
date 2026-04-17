@@ -29,6 +29,7 @@
       <a href="#cartas">Cartas</a>
       <a href="#chakras">Chakras</a>
       <a href="#ritual">Ritual</a>
+      <a href="#registro">Registro</a>
     </nav>
   </header>
 
@@ -117,8 +118,8 @@
           <form class="reading-form" id="reading-form">
             <div class="field-grid">
               <label class="field">
-                <span>Tu nombre</span>
-                <input id="user-name" name="name" type="text" placeholder="Ejemplo: Camila">
+                <span>Tu nombre o nombre completo</span>
+                <input id="user-name" name="name" type="text" placeholder="Ejemplo: Camila Araya">
               </label>
 
               <label class="field">
@@ -154,6 +155,26 @@
                   <option value="manifestar">Manifestacion</option>
                 </select>
               </label>
+
+              <label class="field">
+                <span>Fecha de nacimiento</span>
+                <input id="birth-date" name="birthDate" type="date">
+              </label>
+
+              <label class="field">
+                <span>Hora de nacimiento</span>
+                <input id="birth-time" name="birthTime" type="time">
+              </label>
+
+              <label class="field">
+                <span>Lugar de nacimiento</span>
+                <input
+                  id="birth-place"
+                  name="birthPlace"
+                  type="text"
+                  placeholder="Ejemplo: Santiago, Chile"
+                >
+              </label>
             </div>
 
             <label class="field full">
@@ -173,6 +194,13 @@
 
             <p class="form-note">
               No necesitas escribir demasiado. Con una intencion sincera, el oraculo ya puede responder.
+            </p>
+            <p class="form-note">
+              Si agregas tu fecha de nacimiento, la lectura podra sumar numerologia y un perfil solar
+              para orientarte con mayor precision.
+            </p>
+            <p class="form-note sync-inline" id="sync-inline">
+              Guardado local activo. La lectura se conservara en este navegador.
             </p>
           </form>
 
@@ -207,7 +235,7 @@
             <p class="result-keyword">Completa el formulario para recibir una guia mas afinada.</p>
             <p>
               Tu respuesta puede incluir una carta principal, el estado emocional que atraviesas,
-              el chakra sugerido y una accion concreta para los proximos dias.
+              el chakra sugerido, un numero de vida orientativo y una accion concreta para los proximos dias.
             </p>
 
             <div class="insight-list">
@@ -222,6 +250,14 @@
               <article>
                 <span>Puerta abierta</span>
                 <strong id="detail-path">La orientacion aparecera junto a tu carta principal.</strong>
+              </article>
+              <article>
+                <span>Perfil solar</span>
+                <strong id="detail-sign">Tu signo solar aparecera aqui si agregas tu fecha de nacimiento.</strong>
+              </article>
+              <article>
+                <span>Numero guia</span>
+                <strong id="detail-life-path">Tu numero de vida aparecera aqui para darle mas precision.</strong>
               </article>
             </div>
 
@@ -345,13 +381,72 @@
         </article>
       </div>
     </section>
+
+    <section class="section-block alt" id="registro">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Registro de lecturas</p>
+        <h2>Tus lecturas pueden quedar guardadas y exportarse cuando lo necesites.</h2>
+        <p>
+          Este panel deja funcionando el guardado en el navegador desde ahora y tambien deja preparada
+          la pagina para enviar datos a Google Sheets cuando actives la URL del script.
+        </p>
+      </div>
+
+      <div class="data-layout">
+        <aside class="data-panel reveal delay-1">
+          <div class="storage-grid">
+            <article class="storage-card">
+              <span class="mini-label">Guardado local</span>
+              <strong id="storage-local-status">Activo en este navegador</strong>
+              <p>Cada lectura nueva se guarda automaticamente en este dispositivo.</p>
+            </article>
+            <article class="storage-card">
+              <span class="mini-label">Nube</span>
+              <strong id="storage-cloud-status">No configurada todavia</strong>
+              <p>Cuando agregues la URL de Apps Script, las lecturas tambien podran enviarse a tu hoja.</p>
+            </article>
+            <article class="storage-card">
+              <span class="mini-label">Lecturas guardadas</span>
+              <strong id="record-count">0 registros</strong>
+              <p id="last-saved">Aun no se guarda ninguna lectura en este navegador.</p>
+            </article>
+          </div>
+
+          <div class="data-actions">
+            <button class="button secondary small" id="export-csv" type="button">Exportar CSV</button>
+            <button class="button secondary small" id="clear-history" type="button">Borrar historial</button>
+          </div>
+
+          <p class="form-note" id="save-feedback" aria-live="polite">
+            El historial aparecera aqui en cuanto generes una lectura.
+          </p>
+        </aside>
+
+        <div class="history-panel reveal delay-2">
+          <div class="oracle-top">
+            <p class="mini-label">Historial reciente</p>
+            <p class="status-pill" id="history-status">Sin lecturas guardadas</p>
+          </div>
+
+          <div class="history-list" id="history-list" aria-live="polite">
+            <article class="history-empty">
+              <h3>Tu bitacora espiritual esta vacia por ahora.</h3>
+              <p>
+                Cuando generes una lectura, aqui se guardaran el nombre, la pregunta, la carta principal,
+                el chakra recomendado, el perfil solar y la fecha.
+              </p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer class="site-footer">
     <p>Templo Astral / diseno web inspirado en lectura de cartas y alineacion de chakras.</p>
   </footer>
 
+  <script src="site-config.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
-

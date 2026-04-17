@@ -480,6 +480,13 @@ button {
   font-size: 0.95rem;
 }
 
+.sync-inline {
+  padding: 0.8rem 1rem;
+  border-radius: 18px;
+  border: 1px solid rgba(131, 216, 215, 0.16);
+  background: rgba(131, 216, 215, 0.06);
+}
+
 .spread {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -654,6 +661,132 @@ button {
   box-shadow: 0 0 20px rgba(239, 207, 136, 0.1);
 }
 
+.data-layout {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 1.5rem;
+  align-items: start;
+  margin-top: 2rem;
+}
+
+.data-panel,
+.history-panel {
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--line);
+  background: var(--panel);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--shadow);
+}
+
+.data-panel {
+  padding: 1.5rem;
+}
+
+.storage-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.storage-card {
+  padding: 1rem 1.1rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.storage-card strong {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+.storage-card p,
+.history-item p,
+.history-meta {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.data-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+.history-panel {
+  padding: 1.5rem;
+}
+
+.history-list {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.history-empty,
+.history-item {
+  padding: 1.25rem;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, rgba(14, 10, 27, 0.76), rgba(31, 20, 54, 0.9));
+}
+
+.history-empty h3,
+.history-item h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.history-empty p,
+.history-item p {
+  margin-bottom: 0;
+}
+
+.history-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.history-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.history-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid rgba(239, 207, 136, 0.18);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--gold);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.history-meta {
+  margin-top: 0.8rem;
+  font-size: 0.95rem;
+}
+
+.history-summary {
+  margin-top: 0.85rem;
+}
+
+.history-note {
+  margin-top: 0.85rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
 .site-footer {
   padding: 4rem 0 3rem;
   text-align: center;
@@ -712,7 +845,8 @@ button {
   .oracle-layout,
   .chakra-layout,
   .ritual-grid,
-  .info-strip {
+  .info-strip,
+  .data-layout {
     grid-template-columns: 1fr;
   }
 
@@ -760,6 +894,8 @@ button {
   .hero-panel,
   .oracle-panel,
   .chakra-panel,
+  .data-panel,
+  .history-panel,
   .reading-form,
   .spread-card,
   .ritual-step,
