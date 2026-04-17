@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Templo Astral | Lectura de Cartas y Alineacion de Chakras</title>
+  <meta
+    name="description"
+    content="Pagina espiritual ambientada en lectura de cartas, energia intuitiva y alineacion de chakras."
+  >
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="backdrop" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="brand" href="#inicio">
+      <span class="brand-mark">*</span>
+      <span class="brand-text">Templo Astral</span>
+    </a>
+
+    <nav class="nav">
+      <a href="#cartas">Cartas</a>
+      <a href="#chakras">Chakras</a>
+      <a href="#ritual">Ritual</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div class="hero-copy reveal">
+        <p class="eyebrow">Lectura intuitiva / energia consciente / guia espiritual</p>
+        <h1>Una pagina creada para conectar con tus cartas, tu energia y tus chakras.</h1>
+        <p class="hero-text">
+          Este espacio mezcla simbolismo, color y orientacion suave para presentar una experiencia
+          mistica moderna. Puedes usarla como pagina informativa, carta de presentacion o base para tu
+          proyecto espiritual.
+        </p>
+
+        <div class="hero-actions">
+          <a class="button primary" href="#cartas">Descubrir el oraculo</a>
+          <a class="button secondary" href="#chakras">Ver alineacion energetica</a>
+        </div>
+      </div>
+
+      <div class="hero-panel reveal delay-1">
+        <div class="constellation">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+        <div class="daily-card">
+          <p class="mini-label">Frecuencia del dia</p>
+          <h2>Escucha lo que tu intuicion ya sabe.</h2>
+          <p>
+            Un portal visual pensado para transmitir calma, misterio y presencia. Las cartas muestran
+            direccion; los chakras muestran el pulso interno.
+          </p>
+        </div>
+
+        <div class="aura-grid">
+          <article>
+            <span>Elemento</span>
+            <strong>Agua y fuego</strong>
+          </article>
+          <article>
+            <span>Ritmo</span>
+            <strong>Respiracion profunda</strong>
+          </article>
+          <article>
+            <span>Intencion</span>
+            <strong>Claridad del corazon</strong>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="info-strip reveal delay-2">
+      <article>
+        <span class="info-number">01</span>
+        <h3>Lecturas simbolicas</h3>
+        <p>Cartas con mensajes claros, lenguaje cercano y una atmosfera elegante.</p>
+      </article>
+      <article>
+        <span class="info-number">02</span>
+        <h3>Mapa energetico</h3>
+        <p>Una guia de los siete chakras con color, funcion y recomendacion emocional.</p>
+      </article>
+      <article>
+        <span class="info-number">03</span>
+        <h3>Experiencia inmersiva</h3>
+        <p>Diseno responsive con luces, degradados y animaciones suaves para destacar tu tema.</p>
+      </article>
+    </section>
+
+    <section class="section-block" id="cartas">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Lectura de cartas</p>
+        <h2>Comparte tu consulta y recibe una lectura mucho mas especifica.</h2>
+        <p>
+          La lectura ahora se adapta al tema que quieres consultar, a tu estado emocional y a la
+          intencion con la que llegas a este espacio.
+        </p>
+      </div>
+
+      <div class="oracle-layout">
+        <div class="oracle-builder reveal delay-1">
+          <form class="reading-form" id="reading-form">
+            <div class="field-grid">
+              <label class="field">
+                <span>Tu nombre</span>
+                <input id="user-name" name="name" type="text" placeholder="Ejemplo: Camila">
+              </label>
+
+              <label class="field">
+                <span>Tema de tu consulta</span>
+                <select id="user-topic" name="topic">
+                  <option value="amor">Amor y vinculos</option>
+                  <option value="trabajo">Trabajo y decisiones</option>
+                  <option value="abundancia">Abundancia y dinero</option>
+                  <option value="energia">Energia personal</option>
+                  <option value="proposito">Camino y proposito</option>
+                  <option value="decision">Una decision importante</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Como te sientes hoy</span>
+                <select id="user-state" name="state">
+                  <option value="confusa">Confundida o con dudas</option>
+                  <option value="ansiosa">Ansiosa o acelerada</option>
+                  <option value="cansada">Cansada o drenada</option>
+                  <option value="sensible">Sensible o emocional</option>
+                  <option value="abierta">Abierta al cambio</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Que deseas recibir</span>
+                <select id="user-intention" name="intention">
+                  <option value="claridad">Claridad</option>
+                  <option value="sanar">Sanacion</option>
+                  <option value="proteccion">Proteccion energetica</option>
+                  <option value="apertura">Apertura de caminos</option>
+                  <option value="manifestar">Manifestacion</option>
+                </select>
+              </label>
+            </div>
+
+            <label class="field full">
+              <span>Escribe tu pregunta o situacion</span>
+              <textarea
+                id="user-question"
+                name="question"
+                rows="4"
+                placeholder="Ejemplo: quiero saber si debo cerrar una etapa o seguir insistiendo"
+              ></textarea>
+            </label>
+
+            <div class="form-actions">
+              <button class="button primary" type="submit">Canalizar lectura</button>
+              <button class="button secondary" id="quick-reading" type="button">Lectura rapida</button>
+            </div>
+
+            <p class="form-note">
+              No necesitas escribir demasiado. Con una intencion sincera, el oraculo ya puede responder.
+            </p>
+          </form>
+
+          <div class="spread personalized-spread">
+            <article class="spread-card" id="spread-now">
+              <span class="spread-step">Momento actual</span>
+              <h3>Tu energia espera una consulta</h3>
+              <p>Aqui veras lo que esta moviendose en tu campo cuando generes la lectura.</p>
+            </article>
+            <article class="spread-card active" id="spread-block">
+              <span class="spread-step">Nudo energetico</span>
+              <h3>La emocion principal se mostrara aqui</h3>
+              <p>Este espacio explica con suavidad el bloqueo o la tension que necesita atencion.</p>
+            </article>
+            <article class="spread-card" id="spread-path">
+              <span class="spread-step">Puerta que se abre</span>
+              <h3>Tu siguiente paso aun no se revela</h3>
+              <p>La lectura personalizada te sugerira una direccion concreta y un pequeno ritual.</p>
+            </article>
+          </div>
+        </div>
+
+        <aside class="oracle-panel reveal delay-2">
+          <div class="oracle-top">
+            <p class="mini-label">Lectura personalizada</p>
+            <p class="status-pill" id="reading-status">Esperando tu consulta</p>
+          </div>
+
+          <div class="result-card personalized-result" id="card-result" aria-live="polite">
+            <p class="result-tag">Lectura inicial</p>
+            <h3>Tu carta se revelara aqui</h3>
+            <p class="result-keyword">Completa el formulario para recibir una guia mas afinada.</p>
+            <p>
+              Tu respuesta puede incluir una carta principal, el estado emocional que atraviesas,
+              el chakra sugerido y una accion concreta para los proximos dias.
+            </p>
+
+            <div class="insight-list">
+              <article>
+                <span>Momento actual</span>
+                <strong id="detail-current">Aun no hay lectura activa.</strong>
+              </article>
+              <article>
+                <span>Bloqueo suave</span>
+                <strong id="detail-block">Tu energia hablara cuando escribas tu consulta.</strong>
+              </article>
+              <article>
+                <span>Puerta abierta</span>
+                <strong id="detail-path">La orientacion aparecera junto a tu carta principal.</strong>
+              </article>
+            </div>
+
+            <p class="result-note" id="detail-ritual">
+              Ritual: respira tres veces, formula tu pregunta y deja que la lectura se organice.
+            </p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section-block alt" id="chakras">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Alineacion de chakras</p>
+        <h2>Explora tus chakras o deja que la consulta elija uno por ti.</h2>
+        <p>
+          Puedes tocar cada chakra para ver su mensaje, o sincronizarlo con la lectura personalizada
+          para recibir una recomendacion energetica mas precisa.
+        </p>
+      </div>
+
+      <div class="chakra-layout">
+        <div class="chakra-column reveal delay-1">
+          <button class="chakra-card root" type="button" data-chakra="Raiz">
+            <span class="chakra-dot"></span>
+            <div>
+              <h3>Raiz</h3>
+              <p>Seguridad, cuerpo, estabilidad.</p>
+            </div>
+          </button>
+          <button class="chakra-card sacral" type="button" data-chakra="Sacro">
+            <span class="chakra-dot"></span>
+            <div>
+              <h3>Sacro</h3>
+              <p>Deseo, creatividad, sensibilidad.</p>
+            </div>
+          </button>
+          <button class="chakra-card solar" type="button" data-chakra="Plexo solar">
+            <span class="chakra-dot"></span>
+            <div>
+              <h3>Plexo solar</h3>
+              <p>Voluntad, autoestima, accion.</p>
+            </div>
+          </button>
+          <button class="chakra-card heart" type="button" data-chakra="Corazon">
+            <span class="chakra-dot"></span>
+            <div>
+              <h3>Corazon</h3>
+              <p>Amor, perdon, expansion interior.</p>
+            </div>
+          </button>
+          <button class="chakra-card throat" type="button" data-chakra="Garganta">
+            <span class="chakra-dot"></span>
+            <div>
+              <h3>Garganta</h3>
+              <p>Voz propia, verdad, expresion.</p>
+            </div>
+          </button>
+          <button class="chakra-card third-eye" type="button" data-chakra="Tercer ojo">
+            <span class="chakra-dot"></span>
+            <div>
+              <h3>Tercer ojo</h3>
+              <p>Vision, intuicion, simbolos.</p>
+            </div>
+          </button>
+          <button class="chakra-card crown" type="button" data-chakra="Corona">
+            <span class="chakra-dot"></span>
+            <div>
+              <h3>Corona</h3>
+              <p>Conexion espiritual y contemplacion.</p>
+            </div>
+          </button>
+        </div>
+
+        <div class="chakra-panel reveal delay-2">
+          <div class="oracle-top">
+            <p class="mini-label">Pulso energetico</p>
+            <button class="button secondary small" id="check-chakra" type="button">Sincronizar consulta</button>
+          </div>
+
+          <div class="result-card chakra-result" id="chakra-result" aria-live="polite">
+            <p class="result-tag">Chakra del momento</p>
+            <h3>Corazon</h3>
+            <p class="result-keyword">Afirmacion: permito que mi energia se abra sin miedo.</p>
+            <p>
+              Tu energia pide ternura y coherencia emocional. Tambien puedes tocar cualquier chakra de la
+              lista para ver una orientacion mas concreta.
+            </p>
+            <p class="result-note">Practica: coloca tus manos en el centro del pecho durante 3 minutos.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-block" id="ritual">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Ritual sugerido</p>
+        <h2>Una secuencia breve para unir cartas, respiracion y energia.</h2>
+      </div>
+
+      <div class="ritual-grid">
+        <article class="ritual-step reveal">
+          <span>1</span>
+          <h3>Respira</h3>
+          <p>Inhala durante cuatro tiempos y exhala en seis, soltando tension del cuerpo.</p>
+        </article>
+        <article class="ritual-step reveal delay-1">
+          <span>2</span>
+          <h3>Formula tu pregunta</h3>
+          <p>Piensa en una intencion clara: amor, trabajo, camino personal o equilibrio interior.</p>
+        </article>
+        <article class="ritual-step reveal delay-2">
+          <span>3</span>
+          <h3>Observa la carta</h3>
+          <p>Lee el mensaje con calma y deja espacio para lo que despierte en ti.</p>
+        </article>
+        <article class="ritual-step reveal delay-3">
+          <span>4</span>
+          <h3>Vuelve al cuerpo</h3>
+          <p>Integra la experiencia con una practica de chakra o una afirmacion sencilla.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Templo Astral / diseno web inspirado en lectura de cartas y alineacion de chakras.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
