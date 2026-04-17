@@ -475,6 +475,12 @@ const clearHistoryButton = document.querySelector("#clear-history");
 
 let readings = loadRecords();
 
+function setText(element, value) {
+  if (element) {
+    element.textContent = value;
+  }
+}
+
 function getCloudUrl() {
   return typeof cloudConfig.appsScriptUrl === "string" ? cloudConfig.appsScriptUrl.trim() : "";
 }
@@ -1039,36 +1045,46 @@ function updateStorageStatus() {
   const syncedCount = readings.filter((record) => record.syncState === "synced").length;
   const lastRecord = readings[0];
 
-  storageLocalStatus.textContent = hasStorage()
-    ? "Activo en este navegador"
-    : "No disponible en este navegador";
+  setText(
+    storageLocalStatus,
+    hasStorage() ? "Activo en este navegador" : "No disponible en este navegador"
+  );
 
   if (!cloudUrl) {
-    storageCloudStatus.textContent = "No configurada todavia";
-    syncInline.textContent =
-      "Guardado local activo. Para enviar a Google Sheets, agrega la URL en site-config.js.";
+    setText(storageCloudStatus, "No configurada todavia");
+    setText(syncInline, "Guardado local activo. Para enviar a Google Sheets, agrega la URL en site-config.js.");
   } else if (pendingCount > 0) {
-    storageCloudStatus.textContent = `${pendingCount} lectura(s) pendiente(s)`;
-    syncInline.textContent =
+    setText(storageCloudStatus, `${pendingCount} lectura(s) pendiente(s)`);
+    setText(
+      syncInline,
       "Guardado local activo. La nube esta configurada y se estan enviando lecturas pendientes.";
+    );
   } else if (syncedCount > 0) {
-    storageCloudStatus.textContent = "Conectada y al dia";
-    syncInline.textContent =
+    setText(storageCloudStatus, "Conectada y al dia");
+    setText(
+      syncInline,
       "Guardado local activo y sincronizacion con Google Sheets lista para nuevas lecturas.";
+    );
   } else {
-    storageCloudStatus.textContent = "Conectada, esperando lecturas";
-    syncInline.textContent =
+    setText(storageCloudStatus, "Conectada, esperando lecturas");
+    setText(
+      syncInline,
       "Guardado local activo y Google Sheets preparado para sincronizar nuevos registros.";
+    );
   }
 
-  recordCount.textContent = `${readings.length} registro(s)`;
-  lastSaved.textContent = lastRecord
-    ? `Ultima lectura guardada: ${lastRecord.displayDate}.`
-    : "Aun no se guarda ninguna lectura en este navegador.";
+  setText(recordCount, `${readings.length} registro(s)`);
+  setText(
+    lastSaved,
+    lastRecord
+      ? `Ultima lectura guardada: ${lastRecord.displayDate}.`
+      : "Aun no se guarda ninguna lectura en este navegador."
+  );
 
-  historyStatus.textContent = readings.length
-    ? `${readings.length} lectura(s) en esta bitacora`
-    : "Sin lecturas guardadas";
+  setText(
+    historyStatus,
+    readings.length ? `${readings.length} lectura(s) en esta bitacora` : "Sin lecturas guardadas"
+  );
 }
 
 function updateRecordSyncState(id, syncState) {
@@ -1113,8 +1129,10 @@ async function syncRecord(record, options = {}) {
     updateRecordSyncState(record.id, "synced");
 
     if (!options.silent) {
-      saveFeedback.textContent =
-        "Lectura guardada en este navegador y enviada a la configuracion actual de Google Sheets.";
+      setText(
+        saveFeedback,
+        "Lectura guardada en este navegador y enviada a la configuracion actual de Google Sheets."
+      );
     }
 
     return true;
@@ -1122,8 +1140,10 @@ async function syncRecord(record, options = {}) {
     updateRecordSyncState(record.id, "error");
 
     if (!options.silent) {
-      saveFeedback.textContent =
-        "La lectura se guardo localmente, pero la sincronizacion externa no pudo completarse.";
+      setText(
+        saveFeedback,
+        "La lectura se guardo localmente, pero la sincronizacion externa no pudo completarse."
+      );
     }
 
     return false;
@@ -1157,7 +1177,7 @@ function csvEscape(value) {
 
 function exportReadingsToCsv() {
   if (!readings.length) {
-    saveFeedback.textContent = "No hay lecturas para exportar todavia.";
+    setText(saveFeedback, "No hay lecturas para exportar todavia.");
     return;
   }
 
@@ -1215,12 +1235,12 @@ function exportReadingsToCsv() {
   link.remove();
   URL.revokeObjectURL(url);
 
-  saveFeedback.textContent = "Se descargo un CSV con las lecturas guardadas en este navegador.";
+  setText(saveFeedback, "Se descargo un CSV con las lecturas guardadas en este navegador.");
 }
 
 function clearHistory() {
   if (!readings.length) {
-    saveFeedback.textContent = "No hay historial que borrar.";
+    setText(saveFeedback, "No hay historial que borrar.");
     return;
   }
 
@@ -1236,7 +1256,7 @@ function clearHistory() {
   saveRecords();
   renderHistory();
   updateStorageStatus();
-  saveFeedback.textContent = "Se borro el historial local de lecturas.";
+  setText(saveFeedback, "Se borro el historial local de lecturas.");
 }
 
 async function renderReading(values, options = {}) {
@@ -1311,9 +1331,12 @@ async function renderReading(values, options = {}) {
   const record = buildReadingRecord(values, reading, profile);
   persistReading(record);
 
-  saveFeedback.textContent = getCloudUrl()
-    ? "Lectura guardada en este navegador. Intentando sincronizar con Google Sheets."
-    : "Lectura guardada en este navegador con perfil numerologico y solar incluido.";
+  setText(
+    saveFeedback,
+    getCloudUrl()
+      ? "Lectura guardada en este navegador. Intentando sincronizar con Google Sheets."
+      : "Lectura guardada en este navegador con perfil numerologico y solar incluido."
+  );
 
   if (getCloudUrl()) {
     await syncRecord(record);
